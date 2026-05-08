@@ -1,7 +1,7 @@
 # Maintainer: jinzhongjia <mail@nviemr.org>
 pkgname=dbx
 pkgver=0.4.3
-pkgrel=1
+pkgrel=2
 pkgdesc="Open-source database management tool (Tauri-based)"
 arch=('x86_64')
 url="https://github.com/t8y2/dbx"
@@ -38,6 +38,17 @@ prepare() {
     export CARGO_HOME="$srcdir/.cargo"
     export npm_config_cache="$srcdir/.npm"
     pnpm config --location project set store-dir "$srcdir/.pnpm-store"
+
+    # Tailwind v4's auto-source-detection (via @tailwindcss/oxide) silently
+    # fails to enumerate .vue/.ts files when the project sits on tmpfs (which
+    # is the case for most AUR helpers' default BUILDDIR). The result is a
+    # ~22 KB stylesheet that contains base CSS but zero utility classes, and
+    # a runtime UI with no Tailwind styling. Pinning the sources explicitly
+    # bypasses oxide's filesystem heuristics.
+    if ! grep -q '^@source' src/styles/globals.css; then
+        sed -i '/^@import "tailwindcss";$/a @source "../**/*.{vue,ts,tsx,js,jsx,html}";' \
+            src/styles/globals.css
+    fi
 
     # Pre-fetch JS and Rust deps so build() can run without network.
     pnpm install --frozen-lockfile
