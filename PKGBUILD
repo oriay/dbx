@@ -1,4 +1,4 @@
-# Maintainer: jinzhongjia <jinzhongjia@manus.ai>
+# Maintainer: jinzhongjia <mail@nviemr.org>
 pkgname=dbx
 pkgver=0.4.3
 pkgrel=1
