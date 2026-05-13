@@ -1,6 +1,6 @@
 # Maintainer: jinzhongjia <mail@nviemr.org>
 pkgname=dbx
-pkgver=0.5.4
+pkgver=0.5.5
 pkgrel=1
 pkgdesc="Open-source database management tool (Tauri-based)"
 arch=('x86_64')
@@ -29,7 +29,7 @@ conflicts=("$pkgname-bin")
 # archives in our dep tree (ring, aws-lc-sys). Disable for this package.
 options=('!lto')
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
-sha256sums=('7898ffbf08a310ed89b88860f149742cbe25fb62b8fd3590332a8ac4a0739d6a')
+sha256sums=('9fa294a39e9ee01467bd4ed9dffe24671288ebefe6ac45b42d99687b84427971')
 
 prepare() {
     cd "$pkgname-$pkgver"
