@@ -1,6 +1,6 @@
 # Maintainer: jinzhongjia <mail@nviemr.org>
 pkgname=dbx
-pkgver=0.5.6
+pkgver=0.5.7
 pkgrel=1
 pkgdesc="Open-source database management tool (Tauri-based)"
 arch=('x86_64')
@@ -27,9 +27,11 @@ conflicts=("$pkgname-bin")
 # makepkg's global LTO option injects -flto=auto / -C linker-plugin-lto, which
 # breaks final-link symbol resolution against several bundled native static
 # archives in our dep tree (ring, aws-lc-sys). Disable for this package.
-options=('!lto')
+# !debug: rust release profile strips symbols, so the auto-split debug pkg is
+# empty and gdb-add-index errors out. Skip the debug subpackage entirely.
+options=('!lto' '!debug')
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
-sha256sums=('cf5951b8b6396645def603f046f69a7dd328e2bf766fc43125413cbbcf406111')
+sha256sums=('6bf12acc7231adc62829f6b25c081e10f15769587359c9c1d73df5f5d743adb3')
 
 prepare() {
     cd "$pkgname-$pkgver"
@@ -38,6 +40,18 @@ prepare() {
     export CARGO_HOME="$srcdir/.cargo"
     export npm_config_cache="$srcdir/.npm"
     pnpm config --location project set store-dir "$srcdir/.pnpm-store"
+
+    # pnpm v10 blocks postinstall scripts unless the package is listed in
+    # package.json#pnpm.onlyBuiltDependencies. Upstream allows esbuild only;
+    # vue-demi also needs its postinstall to pick the right Vue 2/3 shim.
+    node -e '
+      const fs = require("fs");
+      const p = JSON.parse(fs.readFileSync("package.json", "utf8"));
+      p.pnpm = p.pnpm || {};
+      const cur = p.pnpm.onlyBuiltDependencies || [];
+      p.pnpm.onlyBuiltDependencies = [...new Set([...cur, "vue-demi"])];
+      fs.writeFileSync("package.json", JSON.stringify(p, null, 2) + "\n");
+    '
 
     # Pre-fetch JS and Rust deps so build() can run without network.
     pnpm install --frozen-lockfile
