@@ -3,3 +3,4 @@
 src/
 pkg/
 build.log
+*.tar.gz
