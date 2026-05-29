@@ -1,6 +1,6 @@
 # Maintainer: jinzhongjia <mail@nvimer.org>
 pkgname=dbx
-pkgver=0.5.21
+pkgver=0.5.24
 pkgrel=1
 pkgdesc="Open-source database management tool (Tauri-based)"
 arch=('x86_64')
@@ -31,7 +31,7 @@ conflicts=("$pkgname-bin")
 # empty and gdb-add-index errors out. Skip the debug subpackage entirely.
 options=('!lto' '!debug')
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
-sha256sums=('52ff890f129f17e30a3ea7c02d9b68648810db2b412a4b6e3130d4045436b5be')
+sha256sums=('38df848f3f82e3c57e60adcc179a5679d75f8a356ae4d03bb19149cb6cb5498b')
 
 prepare() {
     cd "$pkgname-$pkgver"
@@ -81,6 +81,12 @@ build() {
     # with undefined symbols at final link. Disabling LTO restores normal
     # static-archive resolution.
     export CARGO_PROFILE_RELEASE_LTO=false
+
+    # Strip $srcdir from panic-message file paths embedded by rustc; otherwise
+    # makepkg warns "package contains reference to $srcdir". Also remap the
+    # cargo registry to a stable path so the binary is reproducible regardless
+    # of where it was built.
+    export RUSTFLAGS="${RUSTFLAGS} --remap-path-prefix=$srcdir/$pkgname-$pkgver=/build/$pkgname --remap-path-prefix=$srcdir/.cargo/registry=/cargo-registry --remap-path-prefix=$srcdir/.cargo/git=/cargo-git"
 
     # Frontend + backend in one step; skip bundling, we install files ourselves
     pnpm exec tauri build --no-bundle
