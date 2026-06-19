@@ -1,6 +1,6 @@
 pkgbase = dbx
 	pkgdesc = Open-source database management tool (Tauri-based)
-	pkgver = 0.5.34
+	pkgver = 0.5.35
 	pkgrel = 1
 	url = https://github.com/t8y2/dbx
 	arch = x86_64
@@ -21,7 +21,7 @@ pkgbase = dbx
 	conflicts = dbx-bin
 	options = !lto
 	options = !debug
-	source = dbx-0.5.34.tar.gz::https://github.com/t8y2/dbx/archive/refs/tags/v0.5.34.tar.gz
-	sha256sums = 9de8318eb9973013ea820692c286928b7d63a3415bf6f86dc6a574321086aa88
+	source = dbx-0.5.35.tar.gz::https://github.com/t8y2/dbx/archive/refs/tags/v0.5.35.tar.gz
+	sha256sums = 5f2563dff1cbbea0f4b0b11b1cbf975d3a0ddab97712e400b5742056c4f96851
 
 pkgname = dbx
