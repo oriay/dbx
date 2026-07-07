@@ -30,7 +30,7 @@ jobs:
         run: |
           pacman -S --noconfirm \
             rust cargo nodejs pnpm pkgconf \
-            webkit2gtk-4.1 gtk3 sqlite unixodbc openssl \
+            webkit2gtk-4.1 gtk3 sqlite sqlcipher unixodbc openssl \
             hicolor-icon-theme
 
       - name: Build package
