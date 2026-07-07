@@ -1,7 +1,7 @@
 # Maintainer: jinzhongjia <mail@nvimer.org>
 pkgname=dbx
 pkgver=0.5.48
-pkgrel=1
+pkgrel=2
 pkgdesc="Open-source database management tool (Tauri-based)"
 arch=('x86_64')
 url="https://github.com/t8y2/dbx"
@@ -19,6 +19,7 @@ makedepends=(
     'cargo'
     'nodejs'
     'pnpm'
+    'sqlcipher'
     'pkgconf'
     'git'
 )
