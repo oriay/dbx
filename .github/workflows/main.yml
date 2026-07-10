@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: archlinux:latest
-      options: --privileged  # 某些构建可能需要
+#      options: --privileged  # 某些构建可能需要
 
     steps:
       - name: Update system and install toolchain
@@ -25,13 +25,6 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Install build dependencies
-        run: |
-          pacman -S --noconfirm \
-            rust cargo nodejs pnpm pkgconf \
-            webkit2gtk-4.1 gtk3 sqlite sqlcipher unixodbc openssl \
-            hicolor-icon-theme
 
       - name: Build package
         run: |
