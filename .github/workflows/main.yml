@@ -33,7 +33,8 @@ jobs:
           sudo -u builder makepkg -s --noconfirm --needed
 
       - name: Upload package artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
-          name: dbx-arch-package
+#          name: dbx-arch-package
           path: '*.pkg.tar.zst'
+          archive: false
