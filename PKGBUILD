@@ -1,7 +1,7 @@
 # Maintainer: jinzhongjia <mail@nvimer.org>
 pkgname=dbx
-pkgver=0.6.11
-pkgrel=2
+pkgver=0.6.41
+pkgrel=1
 pkgdesc="Open-source database management tool (Tauri-based)"
 arch=('x86_64')
 url="https://github.com/t8y2/dbx"
@@ -32,7 +32,7 @@ conflicts=("$pkgname-bin")
 # empty and gdb-add-index errors out. Skip the debug subpackage entirely.
 options=('!lto' '!debug')
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
-sha256sums=('fad67cafbb79618a2f13799c5571577b67225fc69e30c3278065c310d170a8c0')
+sha256sums=('196d1f4a6c7589c09f232315a08f1c905de104726854e7975ddb17ad97b04b1c')
 
 # rustup provides an unversioned "rust" package, so check the actual toolchain.
 _check_rust_version() {
@@ -63,11 +63,11 @@ prepare() {
     # dependency instead: vendoring embeds its temporary $srcdir install path
     # in the final binary.
     sed -i 's/openssl = { version = "0.10", features = \["vendored"\] }/openssl = "0.10"/' \
-        crates/dbx-core/Cargo.toml
+        crates/dbx-drivers/Cargo.toml crates/dbx-driver-postgres/Cargo.toml
     # The release binary must not retain a build-workspace fallback path.
     # It is only useful to upstream developers and contains $srcdir via
     # env!("CARGO_MANIFEST_DIR").
-    sed -i '/CARGO_MANIFEST_DIR/,+2d' crates/dbx-core/src/agent_service.rs
+    sed -i '/CARGO_MANIFEST_DIR/,+2d' crates/dbx-driver-agent/src/agent_service.rs
     # Pre-fetch JS and Rust deps so build() can run without network.
     pnpm install --frozen-lockfile
     (
@@ -91,7 +91,7 @@ build() {
     # makepkg warns "package contains reference to $srcdir". Also remap the
     # cargo registry to a stable path so the binary is reproducible regardless
     # of where it was built.
-    export RUSTFLAGS="${RUSTFLAGS} --remap-path-prefix=$srcdir/$pkgname-$pkgver=/build/$pkgname --remap-path-prefix=$srcdir/.cargo/registry=/cargo-registry --remap-path-prefix=$srcdir/.cargo/git=/cargo-git"
+    export RUSTFLAGS="${RUSTFLAGS} --remap-path-prefix=$srcdir/$pkgname-$pkgver=/build/$pkgname --remap-path-prefix=$srcdir/.cargo/registry=/cargo-registry --remap-path-prefix=$srcdir/.cargo/git=/cargo-git --remap-path-prefix=$(rustc --print sysroot)=/rust-toolchain"
 
     # Frontend + backend in one step; skip bundling, we install files ourselves
     pnpm exec tauri build --no-bundle
